@@ -9,21 +9,27 @@ Rectangle {
     property string title: ""
     property var sensorModel: ListModel {}
 
-    ColumnLayout {
+    Item {
         anchors.fill: parent
         anchors.margins: 16
-        spacing: 12
 
         Text {
+            id: machineTitle
             text: title
             color: "white"
-            font.pixelSize: 20
+            font.pixelSize: 35
             font.bold: true
         }
 
         GridLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+            id: sensorGrid
+            anchors {
+                top: machineTitle.bottom
+                topMargin: 16
+                bottom: parent.bottom
+                left: parent.left
+                right: parent.right
+            }
             columns: 2
             columnSpacing: 12
             rowSpacing: 12
@@ -32,6 +38,10 @@ Rectangle {
                 model: sensorModel
                 delegate: SensorValue {
                     Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.columnSpan: sensorModel.count === 2 ? 2 : 1
+                    Layout.preferredWidth: 1
+                    Layout.preferredHeight: sensorModel.count === 2 ? sensorGrid.height / 2 : 1
                     label: model.label
                     value: model.value
                     unit: model.unit
