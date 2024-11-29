@@ -23,7 +23,7 @@ Page {
             height: 48
             color: "#7F1D1D"
             radius: 8
-            visible: true
+            visible: false
 
             RowLayout {
                 anchors.fill: parent
@@ -51,7 +51,7 @@ Page {
             height: 48
             color: "#854D0E"
             radius: 8
-            visible: true
+            visible: false
 
             RowLayout {
                 anchors.fill: parent
@@ -74,6 +74,7 @@ Page {
         }
     }
 
+    //Column Layout for MachineCards
     ColumnLayout {
         anchors {
             fill: parent
@@ -86,8 +87,21 @@ Page {
             Layout.fillHeight: true
             spacing: 16
 
+            //Item for blank spacing
+            Item {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+            }
+
+            //Item for blank spacing
+            Item {
+                Layout.preferredWidth: 150
+                Layout.fillHeight: true
+            }
+
             // Rinsing Machine
             MachineCard {
+                id: rinsing
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 title: "Rinsing Machine"
@@ -111,11 +125,13 @@ Page {
             }
 
             SideArrow {
+                id: rightArrow
                 Layout.preferredWidth: 150
             }
 
             // Filling Machine
             MachineCard {
+                id: filling
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 title: "Filling Machine"
@@ -142,8 +158,76 @@ Page {
                     }
                 }
             }
+        }
 
-            SideArrow {
+        Item {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 150
+            DownArrow {
+                anchors {
+                    right: parent.right
+                    rightMargin: capping.width / 2
+                    verticalCenter: parent.verticalCenter
+                }
+            }
+        }
+
+        //second row
+        RowLayout {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            spacing: 16
+
+            //Packing Machine
+            MachineCard {
+                id: packing
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                title: "Packing Machine"
+                sensorModel: ListModel {
+                    ListElement {
+                        label: "Boxes Remaining"
+                        value: "5432"
+                        unit: ""
+                    }
+                    ListElement {
+                        label: "Box Weight"
+                        value: "4.5"
+                        unit: "kg"
+                    }
+                }
+            }
+
+            SideLeftArrow {
+                Layout.preferredWidth: 150
+            }
+
+            //Labeling Machine
+            MachineCard {
+                id: labeling
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                title: "Labeling Machine"
+                sensorModel: ListModel {
+                    ListElement {
+                        label: "Label Quality"
+                        value: "OK"
+                        unit: ""
+                    }
+                    ListElement {
+                        label: "Labels Remaining"
+                        value: "9234"
+                        unit: ""
+                    }
+                    ListElement {
+                        label: "Position Offset"
+                        value: "0.5"
+                        unit: "mm"
+                    }
+                }
+            }
+
+            SideLeftArrow {
                 Layout.preferredWidth: 150
             }
 
@@ -167,203 +251,21 @@ Page {
                 }
             }
         }
-
-        Item {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 150
-            DownArrow {
-                anchors {
-                    right: parent.right
-                    rightMargin: capping.width / 2
-                    verticalCenter: parent.verticalCenter
-                }
-            }
-        }
-
-        //second row
-        RowLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            spacing: 16
-
-            DashboardDataCard {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-            }
-
-            Item {
-                Layout.preferredWidth: 150
-                Layout.fillHeight: true
-            }
-
-            MachineCard {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                title: "Packing Machine"
-                sensorModel: ListModel {
-                    ListElement {
-                        label: "Boxes Remaining"
-                        value: "5432"
-                        unit: ""
-                    }
-                    ListElement {
-                        label: "Box Weight"
-                        value: "4.5"
-                        unit: "kg"
-                    }
-                }
-            }
-
-            SideLeftArrow {
-                Layout.preferredWidth: 150
-            }
-
-            MachineCard {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                title: "Labeling Machine"
-                sensorModel: ListModel {
-                    ListElement {
-                        label: "Label Quality"
-                        value: "OK"
-                        unit: ""
-                    }
-                    ListElement {
-                        label: "Labels Remaining"
-                        value: "9234"
-                        unit: ""
-                    }
-                    ListElement {
-                        label: "Position Offset"
-                        value: "0.5"
-                        unit: "mm"
-                    }
-                }
-            }
-        }
     }
 
-    // Machines Grid
-
-
-    /*
-    GridLayout {
-        anchors.fill: parent
-        anchors.margins: 16
-        anchors.topMargin: 80
-        columns: 3
-        rowSpacing: 16
-        columnSpacing: 16
-
-        MachineCard {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            title: "Rinsing Machine"
-            sensorModel: ListModel {
-                ListElement {
-                    label: "Temperature"
-                    value: "70.5"
-                    unit: "°C"
-                }
-                ListElement {
-                    label: "Flow Rate"
-                    value: "150.2"
-                    unit: "L/min"
-                }
-                ListElement {
-                    label: "pH Level"
-                    value: "12.0"
-                    unit: ""
-                }
-            }
+    Item {
+        anchors {
+            margins: 16
+            ///right: rinsing.left
+            left: parent.left
+            top: parent.top
+            //bottom: packing.top
         }
-
-        MachineCard {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            title: "Filling Machine"
-            sensorModel: ListModel {
-                ListElement {
-                    label: "Tank Level"
-                    value: "85"
-                    unit: "%"
-                }
-                ListElement {
-                    label: "Fill Rate"
-                    value: "30"
-                    unit: "L/min"
-                }
-                ListElement {
-                    label: "Pressure"
-                    value: "3.0"
-                    unit: "bar"
-                }
-                ListElement {
-                    label: "Bottle Weight"
-                    value: "375"
-                    unit: "g"
-                }
-            }
-        }
-
-        MachineCard {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            title: "Capping Machine"
-            sensorModel: ListModel {
-                ListElement {
-                    label: "Torque"
-                    value: "2.0"
-                    unit: "Nm"
-                }
-                ListElement {
-                    label: "Caps Remaining"
-                    value: "8547"
-                    unit: ""
-                }
-            }
-        }
-
-        MachineCard {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            title: "Labeling Machine"
-            sensorModel: ListModel {
-                ListElement {
-                    label: "Label Quality"
-                    value: "OK"
-                    unit: ""
-                }
-                ListElement {
-                    label: "Labels Remaining"
-                    value: "9234"
-                    unit: ""
-                }
-                ListElement {
-                    label: "Position Offset"
-                    value: "0.5"
-                    unit: "mm"
-                }
-            }
-        }
-
-        MachineCard {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            title: "Packing Machine"
-            sensorModel: ListModel {
-                ListElement {
-                    label: "Boxes Remaining"
-                    value: "5432"
-                    unit: ""
-                }
-                ListElement {
-                    label: "Box Weight"
-                    value: "4.5"
-                    unit: "kg"
-                }
-            }
+        height: parent.height - (packing.height + 48)
+        width: parent.width - (rinsing.width + rightArrow.width + filling.width + 80)
+        DashboardControlCard {
+            id: dashboardControl
+            anchors.centerIn: parent
         }
     }
-    */
 }
