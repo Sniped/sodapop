@@ -45,6 +45,7 @@ Rectangle {
                     label: model.label
                     value: model.value
                     unit: model.unit
+                    numElements: sensorModel.count
                 }
             }
         }
