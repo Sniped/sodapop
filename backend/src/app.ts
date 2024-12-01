@@ -1,5 +1,9 @@
+import 'dotenv/config';
 import Fastify from 'fastify';
 import websocketPlugin from '@fastify/websocket';
+import { drizzle } from 'drizzle-orm/node-postgres';
+
+const db = drizzle(process.env.DATABASE_URL!);
 
 const fastify = Fastify({ logger: true });
 
