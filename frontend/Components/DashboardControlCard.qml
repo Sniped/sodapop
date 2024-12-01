@@ -182,13 +182,17 @@ Rectangle {
                         Text {
                             text: "120"
                             color: "#60A5FA"
-                            font.pixelSize: 42
+                            font.pixelSize: Math.min(
+                                                parent.parent.width * 0.26,
+                                                parent.parent.height * 0.67)
                             font.bold: true
                         }
                         Text {
                             text: "bottles/min"
                             color: "#94A3B8"
-                            font.pixelSize: 16
+                            font.pixelSize: Math.min(
+                                                parent.parent.width * 0.13,
+                                                parent.parent.height * 0.33)
                             anchors.baseline: parent.children[0].baseline
                             wrapMode: Text.WordWrap
                             width: contentWidth
@@ -318,13 +322,17 @@ Rectangle {
                         Text {
                             text: "23"
                             color: "#60A5FA"
-                            font.pixelSize: 42
+                            font.pixelSize: Math.min(
+                                                parent.parent.width * 0.26,
+                                                parent.parent.height * 0.67)
                             font.bold: true
                         }
                         Text {
                             text: "minutes"
                             color: "#94A3B8"
-                            font.pixelSize: 16
+                            font.pixelSize: Math.min(
+                                                parent.parent.width * 0.13,
+                                                parent.parent.height * 0.33)
                             anchors.baseline: parent.children[0].baseline
                             wrapMode: Text.WordWrap
                             width: contentWidth
@@ -365,13 +373,17 @@ Rectangle {
                         Text {
                             text: "1,250"
                             color: "#60A5FA"
-                            font.pixelSize: 42
+                            font.pixelSize: Math.min(
+                                                parent.parent.width * 0.26,
+                                                parent.parent.height * 0.67)
                             font.bold: true
                         }
                         Text {
                             text: "boxes"
                             color: "#94A3B8"
-                            font.pixelSize: 16
+                            font.pixelSize: Math.min(
+                                                parent.parent.width * 0.13,
+                                                parent.parent.height * 0.33)
                             anchors.baseline: parent.children[0].baseline
                             wrapMode: Text.WordWrap
                             width: contentWidth

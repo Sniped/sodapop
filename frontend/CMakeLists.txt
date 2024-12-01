@@ -30,6 +30,7 @@ qt_add_qml_module(appQtAthon
         QML_FILES Components/DownArrow.qml
         QML_FILES Components/SideLeftArrow.qml
         QML_FILES Components/DashboardControlCard.qml
+        QML_FILES
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
