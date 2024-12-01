@@ -49,7 +49,7 @@ const mqttClient = await mqtt.connectAsync(process.env.MQTT_URL!, {
 mqttClient.on('connect', async () => {
 	fastify.log.info('MQTT connected');
 
-	await mqttClient.subscribeAsync('sodapop/#');
+	await mqttClient.subscribeAsync('sodapop/tx/#');
 
 	await handleDataLogging(mqttClient);
 });
