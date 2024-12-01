@@ -1,7 +1,11 @@
+export type DeviceType = 'rising' | 'filling' | 'capping' | 'labeling' | 'packing';
+
+export type LogType = 'error' | 'warning' | 'data';
+
 interface BaseDevicePayload {
 	device: {
 		id: number;
-		type: 'rising' | 'filling' | 'capping' | 'labeling' | 'packing';
+		type: DeviceType;
 	};
 }
 
