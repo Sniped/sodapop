@@ -1,0 +1,25 @@
+{
+	"name": "backend",
+	"module": "src/app.ts",
+	"type": "module",
+	"scripts": {
+		"start": "bun run src/app.ts"
+	},
+	"devDependencies": {
+		"@types/bun": "latest",
+		"@types/pg": "^8.11.10",
+		"drizzle-kit": "^0.28.1",
+		"tsx": "^4.19.2"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	},
+	"dependencies": {
+		"@fastify/websocket": "^11.0.1",
+		"dotenv": "^16.4.5",
+		"drizzle-orm": "^0.36.4",
+		"fastify": "^5.1.0",
+		"mqtt": "^5.10.3",
+		"pg": "^8.13.1"
+	}
+}

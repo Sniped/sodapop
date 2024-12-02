@@ -1,7 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-//#include "sensordatagenerator.h"
+#include "datamanager.h"
 
 int main(int argc, char *argv[])
 {
@@ -9,8 +9,12 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    //SensorDataGenerator dataGenerator;
-    //engine.rootContext()->setContextProperty("sensorData", &dataGenerator);
+    DataManager dataManager;
+    dataManager.start();
+
+    qmlRegisterType<DataManager>("com.example.backend", 1, 0, "DataManager");
+
+    engine.rootContext()->setContextProperty("dataManager", &dataManager);
 
     QObject::connect(
         &engine,
@@ -19,8 +23,6 @@ int main(int argc, char *argv[])
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
     engine.loadFromModule("QtAthon", "Main");
-
-    //dataGenerator.startGenerating();
 
     return app.exec();
 }

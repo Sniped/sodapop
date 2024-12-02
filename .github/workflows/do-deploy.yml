@@ -1,0 +1,36 @@
+name: Deploy to DigitalOcean Kubernetes
+on:
+  push:
+    branches: [ main ]
+
+env:
+  REGISTRY: registry.digitalocean.com/colins-reg
+  IMAGE_NAME: sodapop-backend
+  CLUSTER_NAME: k8s-1-31-1-do-4-nyc3-1732812506121
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install doctl
+      uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DO_ACCESS_TOKEN }}
+
+    - name: Log in to DO Container Registry
+      run: doctl registry login --expiry-seconds 1200
+
+    - name: Build and push image
+      run: |
+        docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7) ./backend
+        docker push $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7)
+
+    - name: Save DigitalOcean kubeconfig
+      run: doctl kubernetes cluster kubeconfig save ${{ env.CLUSTER_NAME }}
+
+    - name: Update deployment
+      run: |
+        kubectl set image deployment/sodapop-backend sodapop-backend=$(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7)
+        kubectl rollout status deployment/sodapop-backend
