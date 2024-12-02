@@ -1,93 +1,78 @@
-// datamanager.cpp
-#include "datamanager.h"
-#include <QDebug>
+// DataManager.cpp
+#include "DataManager.h"
 
 DataManager::DataManager(QObject *parent)
     : QObject(parent)
 {
     connect(&m_webSocket, &QWebSocket::connected, this, &DataManager::onConnected);
-    connect(&m_webSocket, &QWebSocket::disconnected, this, &DataManager::onDisconnected);
     connect(&m_webSocket, &QWebSocket::textMessageReceived, this, &DataManager::onTextMessageReceived);
-
-    qDebug() << "asdasdasdasdasdasd";
-
-    QNetworkRequest request(QUrl("wss://sodapop.colin.gg/ws"));
-    request.setRawHeader("Authorization", "e48y5QfmnJSCae5gMJsd");
-
-    qDebug() << "Connecting to WebSocket server...";
-    m_webSocket.open(request);
 }
 
-void DataManager::connectToServer()
+void DataManager::start()
 {
     QNetworkRequest request(QUrl("wss://sodapop.colin.gg/ws"));
     request.setRawHeader("Authorization", "e48y5QfmnJSCae5gMJsd");
-
-    qDebug() << "Connecting to WebSocket server...";
     m_webSocket.open(request);
 }
 
 void DataManager::onConnected()
 {
-    qDebug() << "WebSocket connected";
-}
-
-void DataManager::onDisconnected()
-{
-    qDebug() << "WebSocket disconnected";
+    qDebug() << "WebSocket connected!";
 }
 
 void DataManager::onTextMessageReceived(const QString &message)
 {
-    QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
-    if (doc.isObject()) {
-        parseDeviceData(doc.object());
-    }
-}
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(message.toUtf8());
+    if (!jsonDoc.isObject()) return;
 
-void DataManager::parseDeviceData(const QJsonObject &data)
-{
-    // Rising section
-    if (data.contains("rising")) {
-        QJsonObject rising = data["rising"].toObject();
-        qDebug() << "Rising:";
-        qDebug() << "  Temperature:" << rising["temperature"].toDouble();
-        qDebug() << "  Flow:" << rising["flow"].toDouble();
-        qDebug() << "  PH:" << rising["PH"].toDouble();
-    }
+    QJsonObject jsonObject = jsonDoc.object();
+    if (!jsonObject.contains("type")) return;
 
-    // Filling section
-    if (data.contains("filling")) {
-        QJsonObject filling = data["filling"].toObject();
-        qDebug() << "Filling:";
-        qDebug() << "  Level:" << filling["level"].toDouble();
-        qDebug() << "  Flow:" << filling["flow"].toDouble();
-        qDebug() << "  Pressure:" << filling["pressure"].toDouble();
-        qDebug() << "  Weight:" << filling["weight"].toDouble();
-    }
+    QString messageType = jsonObject["type"].toString();
+    if (messageType != "data") return;
 
-    // Capping section
-    if (data.contains("capping")) {
-        QJsonObject capping = data["capping"].toObject();
-        qDebug() << "Capping:";
-        qDebug() << "  Torque:" << capping["torque"].toDouble();
-        qDebug() << "  Count:" << capping["count"].toInt();
-    }
+    if (!jsonObject.contains("device") || !jsonObject.contains("metrics")) return;
 
-    // Labeling section
-    if (data.contains("labeling")) {
-        QJsonObject labeling = data["labeling"].toObject();
-        qDebug() << "Labeling:";
-        qDebug() << "  Vision:" << labeling["vision"].toBool();
-        qDebug() << "  Count:" << labeling["count"].toInt();
-        qDebug() << "  Position:" << labeling["position"].toDouble();
-    }
+    QJsonObject device = jsonObject["device"].toObject();
+    QJsonObject metrics = jsonObject["metrics"].toObject();
+    QString deviceType = device["type"].toString();
 
-    // Packing section
-    if (data.contains("packing")) {
-        QJsonObject packing = data["packing"].toObject();
-        qDebug() << "Packing:";
-        qDebug() << "  Count:" << packing["count"].toInt();
-        qDebug() << "  Weight:" << packing["weight"].toDouble();
+    if (deviceType == "rising") {
+        m_rinsingTemperature = metrics["temperature"].toDouble();
+        m_rinsingFlow = metrics["flow"].toDouble();
+        m_rinsingPH = metrics["PH"].toDouble();
+        emit rinsingTemperatureChanged();
+        emit rinsingFlowChanged();
+        emit rinsingPHChanged();
+    }
+    else if (deviceType == "filling") {
+        m_fillingLevel = metrics["level"].toDouble();
+        m_fillingFlow = metrics["flow"].toDouble();
+        m_fillingPressure = metrics["pressure"].toDouble();
+        m_fillingWeight = metrics["weight"].toDouble();
+        emit fillingLevelChanged();
+        emit fillingFlowChanged();
+        emit fillingPressureChanged();
+        emit fillingWeightChanged();
+    }
+    else if (deviceType == "capping") {
+        m_cappingTorque = metrics["torque"].toDouble();
+        m_cappingCount = metrics["count"].toInt();
+        emit cappingTorqueChanged();
+        emit cappingCountChanged();
+    }
+    else if (deviceType == "labeling") {
+        m_labelingVision = metrics["vision"].toBool() ? "OK" : "FAIL";
+        m_labelingCount = metrics["count"].toInt();
+        m_labelingPosition = metrics["position"].toDouble();
+        emit labelingVisionChanged();
+        emit labelingCountChanged();
+        emit labelingPositionChanged();
+    }
+    else if (deviceType == "packing") {
+        m_packingCount = metrics["count"].toInt();
+        m_packingWeight = metrics["weight"].toDouble();
+        emit packingCountChanged();
+        emit packingWeightChanged();
     }
 }

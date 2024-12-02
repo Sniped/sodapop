@@ -10,6 +10,10 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
 
     DataManager dataManager;
+    dataManager.start();
+
+    qmlRegisterType<DataManager>("com.example.backend", 1, 0, "DataManager");
+
     engine.rootContext()->setContextProperty("dataManager", &dataManager);
 
     QObject::connect(
