@@ -4,7 +4,7 @@ on:
     branches: [ main ]
 
 env:
-  REGISTRY: registry.digitalocean.com
+  REGISTRY: registry.digitalocean.com/colins-reg
   IMAGE_NAME: sodapop-backend
   CLUSTER_NAME: k8s-1-31-1-do-4-nyc3-1732812506121
 
