@@ -100,6 +100,13 @@ fastify.register(async fastify => {
 		dataProcessor.on('error', errorHandler);
 		dataProcessor.on('warning', warningHandler);
 
+		connection.on('message', async message => {
+			const msg = message.toString();
+
+			if (msg === 'stop' || msg === 'start')
+				await mqttClient.publishAsync(`sodapop/rx/${msg}`, msg);
+		});
+
 		connection.on('close', () => {
 			fastify.log.info('Websocket client disconnected');
 
