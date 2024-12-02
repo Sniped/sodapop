@@ -1,6 +1,27 @@
-export type DeviceType = 'rising' | 'filling' | 'capping' | 'labeling' | 'packing';
+export type DeviceType =
+	| 'rising'
+	| 'filling'
+	| 'capping'
+	| 'labeling'
+	| 'packing';
 
 export type LogType = 'error' | 'warning' | 'data';
+
+interface ThresholdRule<T> {
+	check: (value: T, context?: any) => boolean;
+	code: number;
+}
+
+interface MetricRules<T> {
+	errors: ThresholdRule<T>[];
+	warnings: ThresholdRule<T>[];
+}
+
+export type DeviceRules = {
+	[K in keyof DeviceData]: {
+		[P in keyof DeviceData[K]]: MetricRules<DeviceData[K][P]>;
+	};
+};
 
 interface BaseDevicePayload {
 	device: {
@@ -9,7 +30,7 @@ interface BaseDevicePayload {
 	};
 }
 
-interface DeviceData {
+export interface DeviceData {
 	rising: {
 		temperature: number;
 		flow: number;
@@ -36,18 +57,20 @@ interface DeviceData {
 	};
 }
 
-interface WarningPayload<T extends DeviceWarningCode>
+export interface WarningPayload<T extends DeviceWarningCode>
 	extends BaseDevicePayload {
 	type: 'warning';
 	warningCode: T;
 }
 
-interface ErrorPayload<T extends DeviceErrorCode> extends BaseDevicePayload {
+export interface ErrorPayload<T extends DeviceErrorCode>
+	extends BaseDevicePayload {
 	type: 'error';
 	errorCode: T;
 }
 
-interface DataPayload<T extends keyof DeviceData> extends BaseDevicePayload {
+export interface DataPayload<T extends keyof DeviceData>
+	extends BaseDevicePayload {
 	type: 'data';
 	device: {
 		id: number;
@@ -56,7 +79,7 @@ interface DataPayload<T extends keyof DeviceData> extends BaseDevicePayload {
 	metrics: DeviceData[T];
 }
 
-enum RisingMachineErrorCodes {
+export enum RisingMachineErrorCodes {
 	TemperatureExceed = 1,
 	TemperatureBelow = 2,
 	PHValueFailThreshold = 3,
@@ -64,14 +87,14 @@ enum RisingMachineErrorCodes {
 	PumpFailure = 5,
 }
 
-enum RisingMachineWarningCodes {
+export enum RisingMachineWarningCodes {
 	TemperatureUpper = 1,
 	TemperatureApproaching = 2,
 	FlowRateAbove = 3,
 	PHValueTrending = 4,
 }
 
-enum FillingMachineErrorCodes {
+export enum FillingMachineErrorCodes {
 	TankLevelBelow = 1,
 	PressureExceed = 2,
 	PressureBelow = 3,
@@ -79,53 +102,53 @@ enum FillingMachineErrorCodes {
 	SystemMalfunction = 5,
 }
 
-enum FillingMachineWarningCodes {
+export enum FillingMachineWarningCodes {
 	TankLevelBelow = 1,
 	BottleWeightLess = 2,
 }
 
-enum CappingMachineErrorCodes {
+export enum CappingMachineErrorCodes {
 	TorqueExceeds = 1,
 	TorqueBelow = 2,
 	CapSupplyEmpty = 3,
 	TorqueFailure = 4,
 }
 
-enum CappingMachineWarningCodes {
+export enum CappingMachineWarningCodes {
 	CapSupplyLow = 1,
 	TorqueValuesHighVariance = 2,
 }
 
-enum LabelingMachineErrorCodes {
+export enum LabelingMachineErrorCodes {
 	LabelSupplyEmpty = 1,
 	PositionOffsetExceeds = 2,
 	VisionSystemLabelDefect = 3,
 }
 
-enum LabelingMachineWarningCodes {
+export enum LabelingMachineWarningCodes {
 	LabelSupplyLow = 1,
 	PositionOffsetUpper = 2,
 }
 
-enum PackingMachineErrorCodes {
+export enum PackingMachineErrorCodes {
 	BoxSupplyEmpty = 1,
 	BoxWeightOutside = 2,
 	BoxWeightFailures = 3,
 }
 
-enum PackingMachineWarningCodes {
+export enum PackingMachineWarningCodes {
 	BoxSupplyLow = 1,
 	BoxWeightUpper = 2,
 }
 
-type DeviceWarningCode =
+export type DeviceWarningCode =
 	| RisingMachineWarningCodes
 	| FillingMachineWarningCodes
 	| CappingMachineWarningCodes
 	| LabelingMachineWarningCodes
 	| PackingMachineWarningCodes;
 
-type DeviceErrorCode =
+export type DeviceErrorCode =
 	| RisingMachineErrorCodes
 	| FillingMachineErrorCodes
 	| CappingMachineErrorCodes

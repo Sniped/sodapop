@@ -5,7 +5,15 @@ import mqtt from 'mqtt';
 import { handleDataLogging } from './lib/mqtt';
 import { db } from './lib/db';
 import { logsTable } from './schema';
-import { desc } from 'drizzle-orm';
+import { desc, eq, or } from 'drizzle-orm';
+import type {
+	DeviceErrorCode,
+	DeviceWarningCode,
+	ErrorPayload,
+	WarningPayload,
+} from './interfaces';
+import { DataProcessor } from './lib/dataProcessor';
+import { handleIssueLogging } from './lib/issue';
 
 /**
  * Fastify initialiaztions
@@ -47,15 +55,25 @@ const mqttClient = await mqtt.connectAsync(process.env.MQTT_URL!, {
 });
 
 mqttClient.on('connect', async () => {
-	fastify.log.info('MQTT connected');
-
-	await mqttClient.subscribeAsync('sodapop/tx/#');
-
-	await handleDataLogging(mqttClient);
+	console.log('MQTT connected');
 });
 
 mqttClient.on('error', error => {
-	fastify.log.error(`Error connecting to MQTT: ${error}`);
+	console.log(`Error connecting to MQTT: ${error}`);
+});
+
+/**
+ * Data Processing
+ */
+
+const dataProcessor = new DataProcessor();
+
+dataProcessor.on('error', async payload => {
+	await handleIssueLogging(payload);
+});
+
+dataProcessor.on('warning', async payload => {
+	await handleIssueLogging(payload);
 });
 
 /**
@@ -70,13 +88,25 @@ fastify.register(async fastify => {
 			connection.send(message.toString());
 		};
 
+		const errorHandler = (payload: ErrorPayload<DeviceErrorCode>) => {
+			connection.send(JSON.stringify(payload));
+		};
+
+		const warningHandler = (payload: WarningPayload<DeviceWarningCode>) => {
+			connection.send(JSON.stringify(payload));
+		};
+
 		mqttClient.on('message', mqttMessageHandler);
+		dataProcessor.on('error', errorHandler);
+		dataProcessor.on('warning', warningHandler);
 
 		connection.on('close', () => {
 			fastify.log.info('Websocket client disconnected');
 
 			// no need to listen if client is disconnected
 			mqttClient.off('message', mqttMessageHandler);
+			dataProcessor.off('error', errorHandler);
+			dataProcessor.off('warning', warningHandler);
 		});
 	});
 
@@ -84,6 +114,9 @@ fastify.register(async fastify => {
 		const logs = await db
 			.select()
 			.from(logsTable)
+			.where(
+				or(eq(logsTable.logType, 'error'), eq(logsTable.logType, 'warning'))
+			)
 			.orderBy(desc(logsTable.createdAt))
 			.limit(25);
 
@@ -95,9 +128,12 @@ fastify.register(async fastify => {
  * Listener
  */
 
-fastify.listen({ port: 3000 }, (err, _) => {
+fastify.listen({ port: 3000 }, async (err, _) => {
 	if (err) {
 		fastify.log.error(`Error starting server: ${err}`);
 		process.exit(1);
 	}
+
+	await mqttClient.subscribeAsync('sodapop/tx/#');
+	await handleDataLogging(dataProcessor, mqttClient);
 });
