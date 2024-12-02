@@ -2,6 +2,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtAthon.Models 1.0
 
 Page {
     background: Rectangle {
@@ -32,19 +33,7 @@ Page {
                 anchors.margins: 16
                 clip: true
                 spacing: 8
-                model: ListModel {
-                    ListElement {
-                        timestamp: "2024-11-28 09:15:23"
-                        type: "ERROR"
-                        message: "Rising Machine: Temperature exceeded safe limit (82.3°C)"
-                    }
-                    ListElement {
-                        timestamp: "2024-11-28 09:14:15"
-                        type: "WARNING"
-                        message: "Filling Machine: Tank level below 25%"
-                    }
-                    // Add more log entries as needed
-                }
+                model: LogsModel {}
 
                 delegate: Rectangle {
                     width: logsView.width
@@ -75,6 +64,7 @@ Page {
                             color: "white"
                             font.pixelSize: 14
                             Layout.fillWidth: true
+                            elide: Text.ElideRight
                         }
                     }
                 }
