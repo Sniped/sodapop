@@ -4,7 +4,7 @@
 
 ## HMI
 
-The HMI is a QML application that creates a WebSocket connection with the data processing utility ("DPU"). A WebSocket message will contain a payload that communicates errors, warnings, and data transmissions that are processed by the DPU. Once this message is received, the HMI will update its UI appropriately. The HMI contains a main view which showcases the flow of the production line along with key metrics, which is typical of a SCADA HMI. While the system does not presently support the acknowledgement of errors and warnings in the system as a normal SCADA system should, errors and warnings are presented to the operator using a notification card at the top right side of the screen. This notification is followed by a sound that continuously plays until the operator dismisses the error or warning. Errors and warnings are also logged in a separate page, presented in a tabular format.
+The HMI is a QML application that creates a WebSocket connection with the data processing utility ("DPU"). A WebSocket message will contain a payload that communicates errors, warnings, and data transmissions that are processed by the DPU. Once this message is received, the HMI will update its UI appropriately. The HMI contains a main view which showcases the flow of the production line along with key metrics, which is typical of a SCADA HMI. While the system does not presently support the acknowledgement of errors and warnings in the system as a normal SCADA system should, errors and warnings are presented to the operator using a notification card at the top right side of the screen. Errors and warnings are also logged in a separate page, presented in a tabular format.
 
 ## Data Processing Utility
 
