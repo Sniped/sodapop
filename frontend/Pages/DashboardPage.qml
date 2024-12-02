@@ -635,6 +635,7 @@ Page {
         DashboardControlCard {
             id: dashboardControl
             anchors.centerIn: parent
+            dataManager: dataManager
         }
     }
 }

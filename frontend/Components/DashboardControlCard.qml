@@ -2,6 +2,8 @@ import QtQuick
 import QtQuick.Layouts
 
 Rectangle {
+    required property var dataManager
+
     width: parent.width
     height: parent.height
     color: "#111827"
@@ -246,10 +248,23 @@ Rectangle {
                         }
 
                         Text {
+                            //edit the text here
+                            id: yurr
                             anchors.horizontalCenter: parent.horizontalCenter
-                            text: "1,250" + " / " + "5,000"
+                            text: dataManager.packingCount.toString(
+                                      ) + " / " + "10,000"
                             color: "#60A5FA"
                             font.pixelSize: 16
+                        }
+                        Connections {
+                            target: dataManager
+                            function onPackingCountChanged() {
+                                // Calculate remaining boxes (10000 - packed boxes)
+                                const remaining = 10000 - Number(
+                                                    dataManager.packingCount)
+                                yurr.text = remaining.toLocaleString(
+                                            ) + " / " + "10,000"
+                            }
                         }
                     }
                 }
@@ -371,13 +386,24 @@ Rectangle {
                         spacing: 8
 
                         Text {
-                            text: "1,250"
+                            id: burr
+                            text: "0"
                             color: "#60A5FA"
                             font.pixelSize: Math.min(
                                                 parent.parent.width * 0.26,
                                                 parent.parent.height * 0.67)
                             font.bold: true
                         }
+
+                        Connections {
+                            target: dataManager
+                            function onPackingCountChanged() {
+                                const remaining = 10000 - Number(
+                                                    dataManager.packingCount)
+                                burr.text = remaining.toLocaleString()
+                            }
+                        }
+
                         Text {
                             text: "boxes"
                             color: "#94A3B8"
