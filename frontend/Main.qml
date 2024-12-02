@@ -35,6 +35,8 @@ ApplicationWindow {
                 spacing: 24
 
                 // User Icon
+
+                /*
                 Image {
                     width: 32
                     height: 32
@@ -43,6 +45,7 @@ ApplicationWindow {
                     fillMode: Image.PreserveAspectFit
                     source: "Icons/user.svg"
                 }
+                */
 
                 // Navigation Buttons
                 NavButton {
