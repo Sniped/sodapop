@@ -22,7 +22,7 @@ qt_add_qml_module(appQtAthon
         QML_FILES Components/MachineCard.qml
         QML_FILES Pages/DashboardPage.qml
         QML_FILES Pages/LogsPage.qml
-        SOURCES sensordatagenerator.h sensordatagenerator.cpp
+        SOURCES
         RESOURCES Icons/dashboard.svg Icons/logs.svg Icons/user.svg
         RESOURCES Icons/alert-circle.svg Icons/alert-triangle.svg
         QML_FILES Components/SideArrow.qml
