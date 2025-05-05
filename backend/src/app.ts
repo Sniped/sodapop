@@ -52,6 +52,7 @@ const mqttClient = await mqtt.connectAsync(process.env.MQTT_URL!, {
 	ca: mqttCaCert,
 	cert: mqttClientCert,
 	key: mqttClientKey,
+	rejectUnauthorized: false,
 });
 
 mqttClient.on('connect', async () => {
