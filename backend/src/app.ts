@@ -45,7 +45,7 @@ const mqttClient = await mqtt.connectAsync(process.env.MQTT_URL!, {
 	username,
 	password,
 	rejectUnauthorized: false,
-});
+}); // trigger this
 
 mqttClient.on('connect', async () => {
 	console.log('MQTT connected');
