@@ -34,24 +34,16 @@ fastify.addHook('onRequest', async (request, reply) => {
  * MQTT initializations
  */
 
-// Raw paths (to be read)
-const mqttCaCertPath = process.env.MQTT_CA_CERT || 'certs/ca.crt';
-const mqttClientCertPath = process.env.MQTT_CLIENT_CERT || 'certs/client.crt';
-const mqttClientKeyPath = process.env.MQTT_CLIENT_KEY || 'certs/client.key';
-
-// Read the files as text
-const mqttCaCert = await Bun.file(mqttCaCertPath).text();
-const mqttClientCert = await Bun.file(mqttClientCertPath).text();
-const mqttClientKey = await Bun.file(mqttClientKeyPath).text();
+const username = process.env.MQTT_USERNAME;
+const password = process.env.MQTT_PASSWORD;
 
 const mqttClient = await mqtt.connectAsync(process.env.MQTT_URL!, {
 	clientId: `backend-${Math.random().toString(16).slice(2, 8)}`,
 	clean: true,
 	connectTimeout: 4000, // 4 seconds
 	reconnectPeriod: 1000, // 1 second
-	ca: mqttCaCert,
-	cert: mqttClientCert,
-	key: mqttClientKey,
+	username,
+	password,
 	rejectUnauthorized: false,
 });
 
