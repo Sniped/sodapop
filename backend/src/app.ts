@@ -26,9 +26,6 @@ process.on("unhandledRejection", (reason, promise) => {
 const fastify = Fastify({
   logger: {
     level: "debug", // Increase log level for more detail
-    transport: {
-      target: "pino-pretty",
-    },
   },
 });
 
